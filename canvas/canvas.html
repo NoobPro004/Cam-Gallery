@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    *{
+        box-sizing: border-box;
+    }
+    body{
+        margin: 0px;
+    }
+    .colors{
+        width:80vw;
+        height:5rem;
+        border: 2px solid;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+    }
+    .color,.download{
+        height: 70%;
+        width: 20%;
+    }
+    .red{
+        background-color: lightcoral;
+    }
+    .green{
+        background-color: lightgreen;
+    }
+    .blue{
+        background-color: lightblue;
+    }
+    .download{
+        border: 3px solid;
+        padding-top:1rem;
+        text-align: center;
+    }
+</style>
+<body>
+    <div class="colors">
+        <div class="color red"></div>
+        <div class="color green"></div>
+        <div class="color blue"></div>
+        <div class="download">Download</div>
+        <!-- <input type="file" class="file-selector" style="display: none;"> -->
+    </div>
+    <!-- <h1>Canvas Board</h1> -->
+    <img src="https://picsum.photos/id/237/200/300" crossorigin="anonymous" >
+    <canvas class="board"></canvas>
+</body>
+<script>
+    let board=document.querySelector(".board");
+    //  tool -> digitizer pen
+    let tool=board.getContext("2d");
+    board.height=window.innerHeight;
+    board.width=window.innerWidth;
+    // x,y,width,height
+    // default color -> black
+    // color
+    // fill -> area fill
+    // tool.fillStyle="lightgreen";
+    // tool.fillRect(0,0,window.innerWidth/2,window.innerHeight/2);
+    // stroke -> outline draw
+    // tool.strokeStyle="red";
+    // tool.lineWidth=10;
+    // tool.beginPath();
+    // tool.moveTo(100,100);
+    // tool.lineTo(200,50);
+    // tool.lineTo(200,200);
+    // tool.moveTo(50,300);
+    // tool.lineTo(200,300);
+    // tool.stroke();
+    // // new Path -> 
+    // tool.beginPath();
+    // tool.moveTo(200,300);
+    // tool.strokeStyle="yellow";
+    // tool.lineWidth=5;
+    // tool.lineTo(200,200);
+    // tool.moveTo(250,150);
+    // tool.lineTo(200,300);
+    // tool.stroke();
+    // tool.lineWidth=10;
+    // tool.strokeRect(0,0,window.innerWidth/2,window.innerHeight/2);
+    // tool.fillStyle="pink";
+    // tool.fillRect(40,40,window.innerWidth/2,window.innerHeight/2);
+
+
+
+
+
+
+
+
+
+    // drawing   
+
+    let isDown=false;
+    tool.strokeStyle="red";
+    tool.lineWidth=10;
+    let colors=document.querySelectorAll(".color");
+    let colorContainer=document.querySelector(".colors");
+    for(let i=0;i<colors.length;i++){
+        colors[i].addEventListener("click",function(){
+            let newColor=colors[i].classList[1];
+            tool.strokeStyle="light"+newColor;
+        })
+    }
+    board.addEventListener("mousedown",function(e){
+
+        tool.beginPath();
+        tool.moveTo(e.clientX,getY(e.clientY));
+        isDown=true;
+    })
+    board.addEventListener("mousemove",function(e){
+        if(isDown==true){
+            tool.lineTo(e.clientX,getY(e.clientY));
+            tool.stroke();
+        }
+    })
+    board.addEventListener("mouseup",function(e){
+        // tool.lineTo(e.clientX,e.clientY);
+        // tool.stroke();
+        isDown=false;
+    })
+
+    function getY(originalY){
+        let obj=colorContainer.getBoundingClientRect();
+        return originalY-obj.height;
+    }
+</script>
+<script>
+    let download=document.querySelector(".download");
+    download.addEventListener("click",function(){
+       let url= board.toDataURL();
+       let a=document.createElement("a");
+       a.download="file.png";
+       a.href=url;
+       a.click();
+       a.remove();
+    })
+</script>
+<script>
+    let myImage=document.querySelector("img");
+    myImage.addEventListener("load",function(){
+        // img, srcImg -> sX,srcY,srcWidth,srcHeight,canvas.x,canvas.y,actual width,actual height of the rendered image 
+        tool.drawImage(myImage,0,0,myImage.width/2,myImage.height/2,30,30,200,200);
+    })
+</script>
+</html>
