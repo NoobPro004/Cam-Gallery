@@ -27,12 +27,15 @@ usermediaPromise.then(function(stream){
     mediarecordingObjectForCurrStream.addEventListener("dataavailaible",function(e){
         recording.push(e.data);
     })
-    mediarecordingObjectForCurrStream.addEventListener("stop",function(){        const blob=new Blob(recording,{type: 'video/mp4'});
-        const url=window.URL.createObjectURL(blob);
-        let a=document.createElement("a");
-        a.download="file.mp4";
-        a.href=url;
-        a.click();
+    mediarecordingObjectForCurrStream.addEventListener("stop",function(){ 
+               let blob=new Blob(recording,{type: 'video/mp4'});
+               addMediaToDB(blob,"video");
+    // const url=window.URL.createObjectURL(blob);
+        // let a=document.createElement("a");
+        // a.download="file.mp4";
+        // a.href=url;
+        // a.click();
+        
         recording=[];
     })
 }).catch(function(err){
@@ -69,8 +72,8 @@ captureImgBtn.addEventListener("click",function(){
     canvas.width=videoElem.videoWidth;
     let tool=canvas.getContext("2d");
     tool.scale(scaleLevel,scaleLevel);
-    const x=(tool.canvas.width / scaleLevel - videoElem.videoWidth) / 2;
-    const y=(tool.canvas.height / scaleLevel - videoElem.videoHeight) / 2;
+    let x=(tool.canvas.width / scaleLevel - videoElem.videoWidth) / 2;
+    let y=(tool.canvas.height / scaleLevel - videoElem.videoHeight) / 2;
     tool.drawImage(videoElem,x,y);
     if(filterColor){
         tool.fillStyle=filterColor;
@@ -78,11 +81,12 @@ captureImgBtn.addEventListener("click",function(){
     }
     // video element
     let url= canvas.toDataURL();
-       let a=document.createElement("a");
-       a.download="file.png";
-       a.href=url;
-       a.click();
-       a.remove();
+    addMediaToDB(url,"img");
+    //    let a=document.createElement("a");
+    //    a.download="file.png";
+    //    a.href=url;
+    //    a.click();
+    //    a.remove();
        setTimeout(function(){
            captureImgBtn.classList.remove("capture-animation");
        },1000);
